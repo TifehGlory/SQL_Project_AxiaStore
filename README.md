@@ -1,5 +1,13 @@
 
 # AxiaStores SQL Database Project
+## Table of Content
+- [Project Overview](#project-overview)
+- [Objectives](#objectives)
+- [Tools and Methodologies](#tools-and-methodologies)
+- [Key Analytical Questions](#key-analytical-questions)
+- [Samples of SQL Queries and Results](#samples-of-sql-queries-and-results)
+- [Answers to Analytical Questions and Results](#answers-to-analytical-questions-and-results)
+- [References](#references)
 
 ## Project Overview
 This project demonstrates a complete SQL based solution for an Electronics & Accessories retail business, *AxiaStores*. It involves designing and implementing a relational database with three core tables, Customer, Product, and Orders. While performing various analytical queries to extract insights.
@@ -15,7 +23,7 @@ The primary goal of this project is to
   - The use of Join funtion for multiple tables
   - Use of aggregate functions like average and sum
  
-    ## Tools and Methodologies 
+## Tools and Methodologies 
 *Tool Used:* *SQL SERVER MANAGEMENT STUDIO 21* [Download Here](https://www.microsoft.com/en-us/sql-server/sql-server-downloads)
 1. Open SSMS
 2. Load and execute script like:
@@ -62,3 +70,92 @@ VALUES
 ('9', 'Kelvin', 'Peters', 'kelvin.peters@hotmail.com', '0803‑123‑0009', 'Asaba'),
 ('10', 'Blessing', 'Mark', 'Blessing.mark@gmail.com', '0803‑123‑0010', 'Uyo');
 </pre>
+
+<img width="544" height="584" alt="image" src="https://github.com/user-attachments/assets/c467b6c3-f11c-4b91-b7bd-3dd48a4039d5" />
+
+
+## Answers to Analytical Questions and Results
+
+1. *Return the FirstName and Email of every customer who has ever purchased the product “Wireless Mouse”*
+<pre>
+--Return the FirstName and Email of every customer who has ever purchased the product “Wireless Mouse”
+select c.firstname, c.email from customertb c
+join OrderTB o on c.CustomerID = o.CustomerID
+join ProductTB p on o.ProductID = p.ProductID
+where p.ProductID=1
+</pre>
+
+<img width="233" height="73" alt="image" src="https://github.com/user-attachments/assets/0f47be63-0f18-4990-b652-6db5115df919" />
+
+
+2. *List all customers’ full names in ascending alphabetical order (LastName, then FirstName)*
+<pre>
+--List all customers’ full names in ascending alphabetical order (LastName, then FirstName)
+SELECT FirstName, LastName
+FROM CustomerTB
+ORDER BY LastName ASC, FirstName ASC;
+</pre>
+
+<img width="164" height="238" alt="image" src="https://github.com/user-attachments/assets/29d2bdba-34fb-469d-8fb7-4399c7125b91" />
+
+
+3. *Show every order together with the customer’s full name, the product name, quantity, unit price, total price (quantity × unit price), and order date.*
+<pre>
+--Show every order together with the customer’s full name, the product name, quantity, unit price, total price (quantity × unit price), and order date.
+select 
+c.FirstName, 
+c.LastName,
+p.productname, 
+o.quantity, 
+p.unitprice,  
+sum (p.unitprice * o.quantity) as 'total price'
+from CustomerTB c
+join ordertb o on c.customerid = c.customerid
+join producttb p on o.productid = p.productid
+GROUP BY 
+    c.FirstName, c.LastName, p.ProductName, o.Quantity,p.UnitPrice;
+</pre>
+
+<img width="469" height="258" alt="image" src="https://github.com/user-attachments/assets/0e6e17a6-1b0e-4e05-ba7d-c68f6bdb8202" />
+
+
+4. *Show average sales per product category and sort in descending order*
+<pre>
+--Show average sales per product category and sort in descending order
+SELECT 
+    p.Category,
+    AVG(o.Quantity) AS AverageSales
+FROM ProductTB p
+JOIN OrdersTB o ON p.ProductID = o.ProductID
+GROUP BY p.Category
+ORDER BY AverageSales DESC;
+</pre>
+
+<img width="189" height="166" alt="image" src="https://github.com/user-attachments/assets/39f33b0e-397f-45c2-872d-466f5e568214" />
+
+
+5. *Which city generated the highest revenue for AxiaStores?*
+<pre>
+--Which city generated the highest revenue for AxiaStores?
+SELECT 
+    c.City,
+    SUM(p.UnitPrice) AS TotalUnitPrice,
+    SUM(o.Quantity) AS TotalQuantity,
+    SUM(p.UnitPrice * o.Quantity) AS TotalRevenue
+FROM 
+    CustomerTB c
+JOIN 
+    OrdersTB o ON c.CustomerID = o.CustomerID
+JOIN 
+    ProductTB p ON o.ProductID = p.ProductID
+GROUP BY 
+    c.City
+ORDER BY 
+    TotalRevenue DESC;
+</pre>
+<img width="353" height="237" alt="image" src="https://github.com/user-attachments/assets/3b16c525-03d0-4665-8e93-d9f21ef4014e" />
+
+
+### References
+- [Axia Africa SQL Exam](https://drive.google.com/file/d/13chnDFUr7NqbyPSRqy65d9pgeVCM86Ix/view)
+- [Axia Africa](https://student.axia.africa)
